@@ -17,14 +17,14 @@ export class MailService {
       <h1>Hello World</h1>
       <b>${code}</b>
     `
-    const result = await this.mailerService
-      .sendMail({
-        from: 'cheon9407@gmail.com',
-        to: email,
-        subject: title,
-        html: content,
-      })
-      .catch(() => { throw new Error('메일 전송을 실패했습니다.') })
+    // const result = await this.mailerService
+    //   .sendMail({
+    //     from: 'cheon9407@gmail.com',
+    //     to: email,
+    //     subject: title,
+    //     html: content,
+    //   })
+    //   .catch(() => { throw new Error('메일 전송을 실패했습니다.') })
     await this.prisma.mail
       .create({
         data: {
@@ -36,7 +36,7 @@ export class MailService {
         }
       })
       .catch(() => { throw new Error('회원가입을 다시 해주세요.') })
-    return result ? true : false
+    return true
   }
 
   async verifyEmail({ code }: { code: string }): Promise<Mail> {

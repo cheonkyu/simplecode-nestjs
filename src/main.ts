@@ -16,6 +16,7 @@ import { TransformInterceptor } from '@/global/transform.intercepter'
 import { ExceptionFilter } from '@/global/exception.filter'
 import { ValidationPipe } from '@nestjs/common'
 import { RequestValidationFilter } from './global/request-validation.filter'
+import { HttpExceptionFilter } from './global/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(
@@ -37,9 +38,12 @@ async function bootstrap() {
     // disableErrorMessages: true,
   }))
   app.useGlobalInterceptors(new TransformInterceptor())
-  app.useGlobalFilters(new ExceptionFilter(httpAdapter))
-  app.useGlobalFilters(new RequestValidationFilter(httpAdapter))
-  app.useGlobalFilters(new PrismaClientExceptionFilter(httpAdapter))
+  app.useGlobalFilters( // 처리순서
+    new ExceptionFilter(httpAdapter), // 4번
+    new HttpExceptionFilter(httpAdapter), // 3번
+    new PrismaClientExceptionFilter(httpAdapter), // 2번
+    new RequestValidationFilter(httpAdapter),  // 1번
+  )
   await app.listen(3000)
 }
 bootstrap()

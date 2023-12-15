@@ -81,3 +81,20 @@ export function softDeleteMiddleware<T extends Prisma.BatchPayload = Prisma.Batc
     return result;
   };
 }
+
+export function PrismaException(errorCode) {
+  return (e: Prisma.PrismaClientKnownRequestError) => {
+    e.message = errorCode[e.code] ?? '잠시 후 다시 시도해주세요.'
+    throw e
+  }
+}
+
+/**
+ * https://www.prisma.io/docs/orm/reference/error-reference#error-codes
+ * - P2002 = 데이터가 중복될때
+ * - P2025 = 데이터를 못찾을때 NOTFOUND
+ */
+export enum PRISMA_ERROR {
+  P2002 = 'P2002',
+  P2025 = 'P2025'
+}
