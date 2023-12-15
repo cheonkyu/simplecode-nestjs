@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  Ready
+  Ok
+}
+
+model User {
+  id    Int     @default(autoincrement()) @id
+  uuid  String  @default(uuid())
+  email String  @unique
+  status UserStatus @default(value: Ready)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted Boolean @default(false)
+}
+
+model Mail {
+  id    Int     @default(autoincrement()) @id
+  uuid  String  @default(uuid())
+  userId Int
+  to    String
+  title String
+  content String
+  code String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deleted Boolean @default(false)
+}
