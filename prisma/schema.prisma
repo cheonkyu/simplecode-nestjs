@@ -17,9 +17,11 @@ enum UserStatus {
 
 model User {
   id    Int     @default(autoincrement()) @id
-  uuid  String  @default(uuid())
+  uuid  String  @unique @default(uuid())
   email String  @unique @db.VarChar(240)
+  password String
   status UserStatus @default(value: Ready)
+  refreshToken String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   deleted Boolean @default(false)

@@ -1,8 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { MailService } from '@/mail/mail.service';
 import { AuthService } from '@/auth/auth.service';
 import { CreateAccount, Login, VerifyAccount } from '@/auth/dto';
 import { ApiTags } from '@nestjs/swagger';
+import { AccessTokenGuard } from './guard/access-token.guard';
+import { User } from '@/user.decorator';
+import { RefreshTokenGuard } from './guard/refresh-token.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -32,11 +35,19 @@ export class AuthController {
         return result
     }
 
+    @UseGuards(AccessTokenGuard)
     @Post('logout')
-    async logout() {
-        // const result = await this.usersService.signin(body)
-        // return {
-        //     access_token: await this.jwtService.signAsync(result),
-        // };
+    async logout(@User() user) {
+        const { uuid } = user 
+        const result = await this.authService.logout(uuid)
+        return result
+    }
+
+    @UseGuards(RefreshTokenGuard)
+    @Get('refresh')
+    async refreshTokens(@Req() req: Request ) {
+        console.log(req)
+        // const result = await this.authService.refreshTokens(body)
+        // return result
     }
 }
